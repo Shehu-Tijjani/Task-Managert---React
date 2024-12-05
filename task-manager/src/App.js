@@ -38,7 +38,7 @@ function App() {
             text: !task.completed
               ? `${task.text} ---hurray`
               : task.text.replace(" ---hurray", ""),
-            complete: !task.completed,
+            completed: !task.completed,
           }
         : task
     );
