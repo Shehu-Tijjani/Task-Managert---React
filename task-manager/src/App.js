@@ -5,13 +5,16 @@ import TaskForm from "./Taskform";
 function App() {
   // const [tasks, setTasks] = useState([]);
 
-  //  const LOCAL_STORAGE_KEY = 'taskManager.tasks';
-
   const [filter, setFilter] = useState("all");
-  // task edits
+
+  // task edits tracking
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingText, setEditingText] = useState("");
 
+  // notification tracking
+  const [notification, setNotificaton] = useState("");
+
+  // task items tracking
   const [tasks, setTasks] = useState(() => {
     try {
       const storedTasks = localStorage.getItem("tasks");
@@ -33,6 +36,7 @@ function App() {
     };
 
     setTasks([...tasks, newTask]);
+    showNotification("Task added!");
   };
 
   const toggleTaskComplete = (id) => {
@@ -50,10 +54,15 @@ function App() {
   const deleteTask = (id) => {
     const filteredTasks = tasks.filter((task) => task.id !== id);
     setTasks(filteredTasks);
+
+    showNotification("Task deleted!");
   };
 
   const clearTasks = () => {
     setTasks([]);
+    tasks.length > 0
+      ? showNotification("Task cleared!")
+      : showNotification("No tasks to clear");
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -76,10 +85,21 @@ function App() {
     // default the tracker
     setEditingTaskId(null);
     setEditingText("");
+
+    showNotification("Task edited succesfully!");
+  };
+
+  const showNotification = (message) => {
+    setNotificaton(message);
+    setTimeout(() => {
+      setNotificaton("");
+    }, 2000);
   };
 
   return (
     <div className="App">
+      {notification && <div className="notification">{notification}</div>}
+
       <h1>Task Manager</h1>
 
       <div className="filter">
@@ -119,12 +139,9 @@ function App() {
 
             <button onClick={(e) => toggleTaskComplete(task.id)}>
               {task.completed ? (
-                (console.log(),
-                (
-                  <svg>
-                    <use xlinkHref="sprite.svg#icon-cross"></use>
-                  </svg>
-                ))
+                <svg>
+                  <use xlinkHref="sprite.svg#icon-cross"></use>
+                </svg>
               ) : (
                 <svg>
                   <use xlinkHref="sprite.svg#icon-checkmark"></use>
