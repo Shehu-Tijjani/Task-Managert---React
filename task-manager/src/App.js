@@ -7,6 +7,11 @@ function App() {
 
   //  const LOCAL_STORAGE_KEY = 'taskManager.tasks';
 
+  const [filter, setFilter] = useState("all");
+  // task edits
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
   const [tasks, setTasks] = useState(() => {
     try {
       const storedTasks = localStorage.getItem("tasks");
@@ -30,14 +35,11 @@ function App() {
     setTasks([...tasks, newTask]);
   };
 
-  const toggleComplete = (id) => {
+  const toggleTaskComplete = (id) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id
         ? {
             ...task,
-            text: !task.completed
-              ? `${task.text} ---hurray`
-              : task.text.replace(" ---hurray", ""),
             completed: !task.completed,
           }
         : task
@@ -50,20 +52,94 @@ function App() {
     setTasks(filteredTasks);
   };
 
+  const clearTasks = () => {
+    setTasks([]);
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "complete") return task.completed;
+    if (filter === "incomplete") return !task.completed;
+    return task;
+  });
+
+  const startEditing = (id, text) => {
+    setEditingTaskId(id);
+    setEditingText(text);
+  };
+
+  const saveTaskEdit = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, text: editingText } : task
+    );
+
+    setTasks(updatedTasks);
+    // default the tracker
+    setEditingTaskId(null);
+    setEditingText("");
+  };
+
   return (
     <div className="App">
       <h1>Task Manager</h1>
 
+      <div className="filter">
+        <span>Filter</span>
+        <div className="drop-down">
+          <div className="connector"></div>
+          <p onClick={() => setFilter("all")}>All</p>
+          <p onClick={() => setFilter("complete")}>Complete</p>
+          <p onClick={() => setFilter("Incomplete")}>Incomplete</p>
+        </div>
+      </div>
+
       <TaskForm onAddTask={addTask} />
 
       <ul className="task-list">
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <li
             key={task.id}
             className={`task-item ${task.completed ? "completed" : ""}`}
-            onClick={(e) => toggleComplete(task.id)}
+            // onClick={(e) => toggleTaskComplete(task.id)}
           >
-            {task.text} - {task.completed ? "Complete" : "Incomplete"}
+            {editingTaskId === task.id ? (
+              <input
+                type="text"
+                value={editingText}
+                onChange={(e) => setEditingText(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" ? saveTaskEdit(task.id) : null
+                }
+                autoFocus
+              />
+            ) : (
+              <p className="text">
+                {task.text}- {task.completed ? "Completed" : "Incomplete"}
+              </p>
+            )}
+
+            <button onClick={(e) => toggleTaskComplete(task.id)}>
+              {task.completed ? (
+                (console.log(),
+                (
+                  <svg>
+                    <use xlinkHref="sprite.svg#icon-cross"></use>
+                  </svg>
+                ))
+              ) : (
+                <svg>
+                  <use xlinkHref="sprite.svg#icon-checkmark"></use>
+                </svg>
+              )}
+            </button>
+
+            {editingTaskId === task.id ? (
+              <button onClick={() => saveTaskEdit(task.id)}>Save</button>
+            ) : (
+              <button onClick={() => startEditing(task.id, task.text)}>
+                Edit
+              </button>
+            )}
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -75,6 +151,15 @@ function App() {
           </li>
         ))}
       </ul>
+
+      <div className="task-stats">
+        <p>Total Tasks: {tasks.length}</p>
+        <p>Completed Tasks: {tasks.filter((task) => task.completed).length}</p>
+      </div>
+
+      <button className="clear" onClick={clearTasks}>
+        Clear all Tasks
+      </button>
     </div>
   );
 }

@@ -8,6 +8,35 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+form {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #0a4c8e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0052a3;
 }
 
 .task-list {
@@ -26,33 +55,104 @@
   transition: all 1s ease-in;
 }
 
-.task-item.completed {
+.task-item p {
+  flex: 1;
+  word-break: break-all;
+  margin-right: 10px;
+}
+
+.task-item.completed .text {
   text-decoration: line-through;
   color: #a0a0a0;
 }
 
-form {
-  display: flex;
-  gap: 10px;
+.task-item input {
+  margin-right: 10px;
+}
+
+.task-item button {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.task-item button svg {
+  height: 10px;
+  width: 10px;
+  fill: #fff;
+}
+
+.task-stats,
+.clear {
+  margin-top: 20px auto;
+  text-align: center;
+}
+
+.clear {
   margin-top: 20px;
 }
 
-input {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.filter {
+  position: relative;
+  width: min-content;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-button {
-  padding: 8px 16px;
-  background-color: #0a4c8e;
-  color: white;
-  border: none;
+.filter:hover .connector {
+  height: 10px;
+}
+
+.filter span {
   border-radius: 4px;
+  border: 1.5px solid #ddd;
+  padding: 1px 4px;
+}
+
+.filter:hover span {
+  background-color: #0052a3;
+  color: #fff;
+}
+
+.drop-down {
+  position: absolute;
+  font-weight: 700;
+  left: 0;
+  top: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  transition: all 0.4s ease;
+}
+
+.filter:hover .drop-down {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+}
+
+.drop-down p {
+  background-color: #0a4c8e;
+  padding: 15px 30px;
+  color: #fff;
+  font-size: 13px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0052a3;
+.drop-down p:not(:last-of-type) {
+  border-bottom: 1px solid #fff;
+}
+
+.drop-down p:first-of-type {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.drop-down p:hover {
+  background-color: #165a9e;
+}
+
+.drop-down p:active {
+  background-color: #0a4c8e;
 }
